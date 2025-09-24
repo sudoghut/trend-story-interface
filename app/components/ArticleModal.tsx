@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui';
 import { Badge } from './ui/badge';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { User, X } from 'lucide-react';
@@ -12,7 +12,7 @@ interface NewsArticle {
   category: string;
   author: string;
   publishedAt: string;
-  readTime: string;
+  readTime?: string;
   fullContent?: string;
 }
 
@@ -95,6 +95,7 @@ export function ArticleModal({ article, isOpen, onClose, onRelatedArticlesClick 
             <Button 
               variant="outline" 
               size="sm"
+              style={{ display: "none" }} // Hidden for future use
               onClick={() => onRelatedArticlesClick(article.category)}
             >
               Related Articles

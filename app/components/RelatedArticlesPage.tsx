@@ -1,7 +1,7 @@
 import { ArrowLeft, Filter } from 'lucide-react';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui';
 import { NewsCard } from './NewsCard';
 
 interface NewsArticle {
@@ -12,7 +12,7 @@ interface NewsArticle {
   category: string;
   author: string;
   publishedAt: string;
-  readTime: string;
+  readTime?: string;
 }
 
 interface RelatedArticlesPageProps {

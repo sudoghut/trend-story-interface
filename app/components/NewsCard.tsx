@@ -1,5 +1,4 @@
-import { Card, CardContent } from './ui/card';
-import { Badge } from './ui/badge';
+import { Card, CardContent, Badge } from './ui';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { User } from 'lucide-react';
 
@@ -11,7 +10,7 @@ interface NewsArticle {
   category: string;
   author: string;
   publishedAt: string;
-  readTime: string;
+  readTime?: string;
 }
 
 interface NewsCardProps {
