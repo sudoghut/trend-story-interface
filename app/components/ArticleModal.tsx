@@ -26,19 +26,20 @@ interface ArticleModalProps {
 export function ArticleModal({ article, isOpen, onClose, onRelatedArticlesClick }: ArticleModalProps) {
   if (!article) return null;
 
-  // Generate full article content based on the summary
-  const fullContent = article.fullContent || `
-    ${article.summary}
+  // // Generate full article content based on the summary
+  // const fullContent = article.fullContent || `
+  //   ${article.summary}
     
-    This breaking news story continues to develop as more information becomes available. Our newsroom is working around the clock to bring you the most accurate and up-to-date reporting on this important story.
+  //   This breaking news story continues to develop as more information becomes available. Our newsroom is working around the clock to bring you the most accurate and up-to-date reporting on this important story.
     
-    The implications of these developments are far-reaching and will likely have significant impact on the broader situation. Experts in the field have been weighing in with their analysis and perspectives on what this means for the future.
+  //   The implications of these developments are far-reaching and will likely have significant impact on the broader situation. Experts in the field have been weighing in with their analysis and perspectives on what this means for the future.
     
-    We will continue to monitor this story closely and provide updates as they become available. Stay tuned to NewsDaily for the latest developments and comprehensive coverage of this and other breaking news stories.
+  //   We will continue to monitor this story closely and provide updates as they become available. Stay tuned to NewsDaily for the latest developments and comprehensive coverage of this and other breaking news stories.
     
-    For more stories like this, explore our ${article.category.toLowerCase()} section where you'll find in-depth reporting and analysis on the issues that matter most.
-  `;
+  //   For more stories like this, explore our ${article.category.toLowerCase()} section where you'll find in-depth reporting and analysis on the issues that matter most.
+  // `;
 
+  const fullContent = article.fullContent  || `${article.summary}`;
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
