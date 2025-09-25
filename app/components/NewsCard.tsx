@@ -5,11 +5,11 @@ import { User } from 'lucide-react';
 interface NewsArticle {
   id: number;
   title: string;
-  summary: string;
   imageUrl: string;
   category: string;
   author: string;
   publishedAt: string;
+  fullContent: string;
 }
 
 interface NewsCardProps {
@@ -44,7 +44,7 @@ export function NewsCard({ article, onClick }: NewsCardProps) {
           </h3>
           
           <p className="text-muted-foreground line-clamp-3">
-            {article.summary}
+            {article.fullContent}
           </p>
           
           <div className="flex items-center justify-between text-sm text-muted-foreground">

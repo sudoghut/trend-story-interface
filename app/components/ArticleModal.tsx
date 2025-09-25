@@ -7,12 +7,11 @@ import { Button } from './ui/button';
 interface NewsArticle {
   id: number;
   title: string;
-  summary: string;
   imageUrl: string;
   category: string;
   author: string;
   publishedAt: string;
-  fullContent?: string;
+  fullContent: string;
 }
 
 interface ArticleModalProps {
@@ -38,7 +37,7 @@ export function ArticleModal({ article, isOpen, onClose, onRelatedArticlesClick 
   //   For more stories like this, explore our ${article.category.toLowerCase()} section where you'll find in-depth reporting and analysis on the issues that matter most.
   // `;
 
-  const fullContent = article.fullContent  || `${article.summary}`;
+  const fullContent = article.fullContent  || "";
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">

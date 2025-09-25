@@ -19,11 +19,11 @@ interface ApiArticle {
 interface NewsArticle {
   id: number;
   title: string;
-  summary: string;
   imageUrl: string;
   category: string;
   author: string;
   publishedAt: string;
+  fullContent: string;
 }
 
 async function fetchNews(): Promise<NewsArticle[]> {
@@ -33,7 +33,7 @@ async function fetchNews(): Promise<NewsArticle[]> {
   return (data.records as ApiArticle[]).map((item) => ({
     id: item.id,
     title: item.keywords,
-    summary: item.news,
+    fullContent: item.news,
     imageUrl: item.image?.url || "",
     category: item.tag?.[0] || "",
     author: "Trending-story Project",

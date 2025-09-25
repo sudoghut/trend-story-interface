@@ -3,11 +3,11 @@ import { NewsCard } from './NewsCard';
 interface NewsArticle {
   id: number;
   title: string;
-  summary: string;
   imageUrl: string;
   category: string;
   author: string;
   publishedAt: string;
+  fullContent: string;
 }
 
 interface NewsGridProps {
