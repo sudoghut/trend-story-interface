@@ -12,7 +12,6 @@ interface NewsArticle {
   category: string;
   author: string;
   publishedAt: string;
-  readTime?: string;
   fullContent?: string;
 }
 
