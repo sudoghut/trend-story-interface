@@ -1,6 +1,6 @@
-import { Search, Menu } from 'lucide-react';
+import { Search, Menu, Github } from 'lucide-react';
 import { Button } from './ui/button';
-import { Input } from './ui';
+
 
 export function Header() {
   return (
@@ -12,11 +12,29 @@ export function Header() {
             <Button variant="ghost" size="icon" className="md:hidden">
               <Menu className="h-5 w-5" />
             </Button>
-            <div className="flex items-center">
+            <div className="flex items-end">
               <h1 className="text-2xl font-bold text-primary">Trending Story</h1>
+              <span className="ml-2 text-sm text-muted-foreground">Explore the stories behind daily <a href="https://trends.google.com/trends/trendingsearches/daily">U.S. Google Trends</a></span>
             </div>
           </div>
 
+          {/* GitHub Badge */}
+          <div className="flex items-center">
+            <Button
+              variant="ghost"
+              size="icon"
+              asChild
+            >
+              <a
+                href="https://github.com/sudoghut/trends-story"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub Repository"
+              >
+                <Github className="h-5 w-5" />
+              </a>
+            </Button>
+          </div>
           {/* Navigation */}
           {/* <nav className="hidden md:flex items-center space-x-6">
             <a href="#" className="text-foreground hover:text-primary transition-colors">Home</a>
@@ -41,8 +59,8 @@ export function Header() {
               <Search className="h-5 w-5" />
             </Button>
           </div> */}
+          </div>
         </div>
-      </div>
     </header>
   );
 }
