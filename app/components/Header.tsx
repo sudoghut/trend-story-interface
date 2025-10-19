@@ -14,7 +14,7 @@ export function Header() {
             </Button>
             <div className="flex items-end">
               <h1 className="text-2xl font-bold text-primary">Trending Stories</h1>
-              <span className="ml-2 text-sm text-muted-foreground">Explore the stories behind daily <a href="https://trends.google.com/trends/trendingsearches/daily">U.S. Google Trends</a></span>
+              <span className="ml-2 text-sm text-muted-foreground">Explore the stories behind daily <a href="https://trends.google.com/trends/trendingsearches/daily" target='_blank'>U.S. Google Trends</a></span>
             </div>
           </div>
 
