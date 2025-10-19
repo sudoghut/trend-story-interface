@@ -113,7 +113,7 @@ export default function NewsPage() {
       />
       {/* Footer can be added here if needed */}
       <footer className="bg-gray-800 text-white text-center py-4 mt-8">
-        <p>Copyright (c) {new Date().getFullYear()} <a href="https://github.com/sudoghut">oopus</a></p>
+        <p>Copyright (c) {new Date().getFullYear()} <a href="https://github.com/sudoghut" target="_blank">oopus</a></p>
       </footer>
     </div>
   );
