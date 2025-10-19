@@ -185,7 +185,7 @@ async function fetchNewsByDate(yyyymmdd: string): Promise<NewsArticle[]> {
     fullContent: item.news,
     imageUrl: item.image?.url || "",
     category: item.tag?.[0] || "",
-    author: "Trending-story Project",
+    author: "Trending-stories Project",
     publishedAt: item.date || "",
   }));
 }
