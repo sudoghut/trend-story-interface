@@ -37,7 +37,7 @@ async function fetchNews(): Promise<NewsArticle[]> {
     imageUrl: item.image?.url || "",
     category: item.tag?.[0] || "",
     author: "Trending-story Project",
-    publishedAt: item.date || data.latest_date || "",
+    publishedAt: item.date || "",
   }));
 }
 
@@ -112,7 +112,7 @@ export default function NewsPage() {
         onRelatedArticlesClick={handleRelatedArticlesClick}
       />
       {/* Footer can be added here if needed */}
-      <footer className="bg-gray-800 text-white text-center py-4 mt-8">
+      <footer className="text-black text-center py-4 mt-8">
         <p>Copyright (c) {new Date().getFullYear()} <a href="https://github.com/sudoghut" target="_blank">oopus</a></p>
       </footer>
     </div>
