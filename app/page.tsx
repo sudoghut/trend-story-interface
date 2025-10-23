@@ -6,6 +6,7 @@ import { Header } from "./components/Header";
 import { NewsGrid } from "./components/NewsGrid";
 import { ArticleModal } from "./components/ArticleModal";
 import { RelatedArticlesPage } from "./components/RelatedArticlesPage";
+import { Analytics } from "@vercel/analytics/next";
 
 interface ApiArticle {
   id: number;
