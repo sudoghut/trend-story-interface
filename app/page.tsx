@@ -4,8 +4,6 @@ import * as React from "react";
 import { useState } from "react";
 import { Header } from "./components/Header";
 import { NewsGrid } from "./components/NewsGrid";
-import { ArticleModal } from "./components/ArticleModal";
-import { RelatedArticlesPage } from "./components/RelatedArticlesPage";
 import { Analytics } from "@vercel/analytics/next";
 
 interface ApiArticle {
@@ -46,10 +44,6 @@ export default function NewsPage() {
   const [articles, setArticles] = useState<NewsArticle[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedArticle, setSelectedArticle] = useState<NewsArticle | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentView, setCurrentView] = useState<"home" | "related">("home");
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
 
   // Fetch news on mount
   React.useEffect(() => {
@@ -65,28 +59,6 @@ export default function NewsPage() {
       });
   }, []);
 
-  const handleArticleClick = (article: NewsArticle) => {
-    setSelectedArticle(article);
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedArticle(null);
-  };
-
-  const handleRelatedArticlesClick = (category: string) => {
-    setSelectedCategory(category);
-    setCurrentView("related");
-    setIsModalOpen(false);
-    setSelectedArticle(null);
-  };
-
-  const handleBackToHome = () => {
-    setCurrentView("home");
-    setSelectedCategory("");
-  };
-
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -96,24 +68,10 @@ export default function NewsPage() {
           <div className="text-red-600 text-center py-8">Error: {error}</div>
         ) : loading ? (
           <div className="text-center py-8">Loading...</div>
-        ) : currentView === "home" ? (
-          <NewsGrid articles={articles} onArticleClick={handleArticleClick} />
         ) : (
-          <RelatedArticlesPage
-            category={selectedCategory}
-            articles={articles}
-            onBack={handleBackToHome}
-            onArticleClick={handleArticleClick}
-          />
+          <NewsGrid articles={articles} />
         )}
       </main>
-      <ArticleModal
-        article={selectedArticle}
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        onRelatedArticlesClick={handleRelatedArticlesClick}
-      />
-      {/* Footer can be added here if needed */}
       <footer className="text-black text-center py-4 mt-8">
         <p>Copyright (c) {new Date().getFullYear()} <a href="https://github.com/sudoghut" target="_blank">oopus</a></p>
       </footer>

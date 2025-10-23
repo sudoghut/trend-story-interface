@@ -1,6 +1,7 @@
 import { Card, CardContent, Badge } from './ui';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { User } from 'lucide-react';
+import Link from 'next/link';
 
 interface NewsArticle {
   id: number;
@@ -14,15 +15,14 @@ interface NewsArticle {
 
 interface NewsCardProps {
   article: NewsArticle;
-  onClick: (article: NewsArticle) => void;
 }
 
-export function NewsCard({ article, onClick }: NewsCardProps) {
+export function NewsCard({ article }: NewsCardProps) {
   return (
-    <Card 
-      className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer group"
-      onClick={() => onClick(article)}
-    >
+    <Link href={`/article/${article.id}`}>
+      <Card
+        className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer group"
+      >
       <div className="relative aspect-video overflow-hidden">
         <ImageWithFallback 
           src={article.imageUrl}
@@ -58,5 +58,6 @@ export function NewsCard({ article, onClick }: NewsCardProps) {
         </div>
       </CardContent>
     </Card>
+    </Link>
   );
 }

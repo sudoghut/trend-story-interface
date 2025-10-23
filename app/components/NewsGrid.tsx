@@ -12,10 +12,9 @@ interface NewsArticle {
 
 interface NewsGridProps {
   articles: NewsArticle[];
-  onArticleClick: (article: NewsArticle) => void;
 }
 
-export function NewsGrid({ articles, onArticleClick }: NewsGridProps) {
+export function NewsGrid({ articles }: NewsGridProps) {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
@@ -25,10 +24,9 @@ export function NewsGrid({ articles, onArticleClick }: NewsGridProps) {
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {articles.map((article) => (
-          <NewsCard 
-            key={article.id} 
+          <NewsCard
+            key={article.id}
             article={article}
-            onClick={onArticleClick}
           />
         ))}
       </div>
