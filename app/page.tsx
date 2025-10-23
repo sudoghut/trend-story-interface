@@ -91,6 +91,7 @@ export default function NewsPage() {
     <div className="min-h-screen bg-background">
       <Header />
       <main>
+        <Analytics />
         {error ? (
           <div className="text-red-600 text-center py-8">Error: {error}</div>
         ) : loading ? (
