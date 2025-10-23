@@ -1,49 +1,15 @@
 "use client";
 
-import * as React from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Header } from "../../components/Header";
 import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
-import { ImageWithFallback } from "../../components/figma/ImageWithFallback";
+import { ImageWithFallback } from "../../components/common/ImageWithFallback";
 import { User, ArrowLeft } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-
-interface ApiArticle {
-  id: number;
-  news: string;
-  date: string;
-  keywords: string;
-  image: { file_name: string; url: string };
-  tag: string[];
-}
-
-interface NewsArticle {
-  id: number;
-  title: string;
-  imageUrl: string;
-  category: string;
-  author: string;
-  publishedAt: string;
-  fullContent: string;
-}
-
-async function fetchAllArticles(): Promise<NewsArticle[]> {
-  const res = await fetch("https://trend-story-api.oopus.info/latest", { cache: "no-store" });
-  if (!res.ok) throw new Error("Failed to fetch news");
-  const data = await res.json();
-  return (data.records as ApiArticle[]).map((item) => ({
-    id: item.id,
-    title: item.keywords,
-    fullContent: item.news,
-    imageUrl: item.image?.url || "",
-    category: item.tag?.[0] || "",
-    author: "Trending-stories Project",
-    publishedAt: item.date || "",
-  }));
-}
+import { NewsArticle, transformApiArticle } from "@/types";
 
 async function fetchArticleById(id: string, date?: string): Promise<NewsArticle | null> {
   try {
@@ -69,15 +35,7 @@ async function fetchArticleById(id: string, date?: string): Promise<NewsArticle 
       if (Array.isArray(data.records)) {
         const match = data.records.find((item: any) => item.id.toString() === id);
         if (match) {
-          found = {
-            id: match.id,
-            title: match.keywords,
-            fullContent: match.news,
-            imageUrl: match.image?.url || "",
-            category: match.tag?.[0] || "",
-            author: "Trending-stories Project",
-            publishedAt: match.date || "",
-          };
+          found = transformApiArticle(match);
         }
       }
     } else {
@@ -88,15 +46,7 @@ async function fetchArticleById(id: string, date?: string): Promise<NewsArticle 
         throw new Error("Failed to fetch article");
       }
       const data = await res.json();
-      found = {
-        id: data.id,
-        title: data.keywords,
-        fullContent: data.news,
-        imageUrl: data.image?.url || "",
-        category: data.tag?.[0] || "",
-        author: "Trending-stories Project",
-        publishedAt: data.date || "",
-      };
+      found = transformApiArticle(data);
     }
 
     // Cache for future use
@@ -321,7 +271,7 @@ export default function ArticlePage() {
         </div>
       </main>
       <footer className="text-black text-center py-4 mt-8">
-        <p>Copyright (c) {new Date().getFullYear()} <a href="https://github.com/sudoghut" target="_blank">oopus</a></p>
+        <p>Copyright (c) {new Date().getFullYear()} <a href="https://github.com/sudoghut" target="_blank" rel="noopener noreferrer">oopus</a></p>
       </footer>
     </div>
   );

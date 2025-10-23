@@ -26,7 +26,7 @@ export default function RootLayout({
     <html lang="en">
       <head>
         {/* Google tag (gtag.js) */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-2X9RMJZ4R6"></script>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-5ZMVBWD496"></script>
         <script
           dangerouslySetInnerHTML={{
             __html: `

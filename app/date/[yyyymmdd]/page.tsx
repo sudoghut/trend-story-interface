@@ -7,25 +7,7 @@ import { NewsGrid } from "../../components/NewsGrid";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
 import Link from "next/link";
-
-interface ApiArticle {
-  id: number;
-  news: string;
-  date: string;
-  keywords: string;
-  image: { file_name: string; url: string };
-  tag: string[];
-}
-
-interface NewsArticle {
-  id: number;
-  title: string;
-  imageUrl: string;
-  category: string;
-  author: string;
-  publishedAt: string;
-  fullContent: string;
-}
+import { NewsArticle, ApiArticle, transformApiArticle } from "@/types";
 
 // Validate date format (yyyymmdd - 8 digits)
 function isValidDateFormat(dateStr: string): boolean {
@@ -144,29 +126,18 @@ function NoDataApology({ formattedDate, dateParam }: { formattedDate: string; da
 }
 
 async function fetchNewsByDate(yyyymmdd: string): Promise<NewsArticle[]> {
-  console.log('[DEBUG] Fetching news for date:', yyyymmdd);
   const res = await fetch(`/api/date/${yyyymmdd}`, {
     cache: "no-store"
   });
   
-  console.log('[DEBUG] Response status:', res.status);
-  console.log('[DEBUG] Response ok:', res.ok);
-  
   if (!res.ok) {
     // Handle 404 error specifically
     if (res.status === 404) {
-      console.log('[DEBUG] Got 404 status, attempting to parse JSON...');
-      const errorData = await res.json().catch((e) => {
-        console.log('[DEBUG] JSON parse error:', e);
-        return {};
-      });
-      console.log('[DEBUG] Parsed error data:', errorData);
+      const errorData = await res.json().catch(() => ({}));
       if (errorData.code === 404 && errorData.error === "No data found for the requested date") {
-        console.log('[DEBUG] Throwing NO_DATA_FOUND error');
         throw new Error("NO_DATA_FOUND");
       }
     }
-    console.log('[DEBUG] Throwing generic fetch error');
     throw new Error("Failed to fetch news for the specified date");
   }
   
@@ -177,15 +148,7 @@ async function fetchNewsByDate(yyyymmdd: string): Promise<NewsArticle[]> {
     return [];
   }
   
-  return (data.records as ApiArticle[]).map((item) => ({
-    id: item.id,
-    title: item.keywords,
-    fullContent: item.news,
-    imageUrl: item.image?.url || "",
-    category: item.tag?.[0] || "",
-    author: "Trending-stories Project",
-    publishedAt: item.date || "",
-  }));
+  return (data.records as ApiArticle[]).map(transformApiArticle);
 }
 
 export default function DateNewsPage({ params }: { params: Promise<{ yyyymmdd: string }> }) {
@@ -196,9 +159,11 @@ export default function DateNewsPage({ params }: { params: Promise<{ yyyymmdd: s
 
   // Unwrap the params Promise using React.use()
   const { yyyymmdd: dateParam } = React.use(params);
-  const formattedDate = formatDateDisplay(dateParam);
+  
+  // Memoize formattedDate to prevent unnecessary re-renders
+  const formattedDate = React.useMemo(() => formatDateDisplay(dateParam), [dateParam]);
 
-  // Fetch news on mount
+  // Fetch news on mount - only depend on dateParam, not formattedDate
   React.useEffect(() => {
     // Validate date format
     if (!isValidDateFormat(dateParam)) {
@@ -211,29 +176,40 @@ export default function DateNewsPage({ params }: { params: Promise<{ yyyymmdd: s
     setIsNoDataFound(false);
     fetchNewsByDate(dateParam)
       .then((data) => {
-        console.log('[DEBUG] Successfully fetched data:', data);
         setArticles(data);
         setLoading(false);
         
         // If no records found, set a specific message
         if (data.length === 0) {
-          setError(`No trend data available for ${formattedDate}`);
+          setError(`No trend data available for ${formatDateDisplay(dateParam)}`);
         }
       })
       .catch((e) => {
-        console.log('[DEBUG] Caught error in useEffect:', e);
-        console.log('[DEBUG] Error message:', e.message);
-        console.log('[DEBUG] Error type:', typeof e.message);
         if (e.message === "NO_DATA_FOUND") {
-          console.log('[DEBUG] Setting isNoDataFound to true');
           setIsNoDataFound(true);
         } else {
-          console.log('[DEBUG] Setting error message:', e.message);
           setError(e.message || "Unknown error");
         }
         setLoading(false);
       });
-  }, [dateParam, formattedDate]);
+  }, [dateParam]);
+
+  // Restore scroll position after content loads
+  React.useEffect(() => {
+    if (!loading && articles.length > 0 && typeof window !== 'undefined') {
+      const currentPath = window.location.pathname;
+      const savedPosition = sessionStorage.getItem('scroll_position_' + currentPath);
+      
+      if (savedPosition) {
+        // Use requestAnimationFrame to ensure DOM is fully rendered
+        requestAnimationFrame(() => {
+          window.scrollTo(0, parseInt(savedPosition, 10));
+          // Clear the saved position after restoring
+          sessionStorage.removeItem('scroll_position_' + currentPath);
+        });
+      }
+    }
+  }, [loading, articles]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -267,7 +243,7 @@ export default function DateNewsPage({ params }: { params: Promise<{ yyyymmdd: s
       </main>
       {/* Footer */}
       <footer className="text-black text-center py-4 mt-8">
-        <p>Copyright (c) {new Date().getFullYear()} <a href="https://github.com/sudoghut" target="_blank">oopus</a></p>
+        <p>Copyright (c) {new Date().getFullYear()} <a href="https://github.com/sudoghut" target="_blank" rel="noopener noreferrer">oopus</a></p>
       </footer>
     </div>
   );

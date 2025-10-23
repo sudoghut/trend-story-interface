@@ -1,6 +1,5 @@
-import { Search, Menu, Github } from 'lucide-react';
+import { Menu, Github } from 'lucide-react';
 import { Button } from './ui/button';
-
 
 export function Header() {
   return (
@@ -35,32 +34,8 @@ export function Header() {
               </a>
             </Button>
           </div>
-          {/* Navigation */}
-          {/* <nav className="hidden md:flex items-center space-x-6">
-            <a href="#" className="text-foreground hover:text-primary transition-colors">Home</a>
-            <a href="#" className="text-muted-foreground hover:text-primary transition-colors">World</a>
-            <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Politics</a>
-            <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Technology</a>
-            <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Business</a>
-            <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Sports</a>
-            <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Science</a>
-          </nav> */}
-
-          {/* Search */}
-          {/* <div className="flex items-center space-x-4">
-            <div className="relative hidden sm:block">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input 
-                placeholder="Search news..." 
-                className="pl-10 w-64"
-              />
-            </div>
-            <Button variant="ghost" size="icon" className="sm:hidden">
-              <Search className="h-5 w-5" />
-            </Button>
-          </div> */}
-          </div>
         </div>
+      </div>
     </header>
   );
 }

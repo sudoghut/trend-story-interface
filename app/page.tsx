@@ -1,43 +1,16 @@
 "use client";
 
-import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Header } from "./components/Header";
 import { NewsGrid } from "./components/NewsGrid";
 import { Analytics } from "@vercel/analytics/next";
-
-interface ApiArticle {
-  id: number;
-  news: string;
-  date: string;
-  keywords: string;
-  image: { file_name: string; url: string };
-  tag: string[];
-}
-
-interface NewsArticle {
-  id: number;
-  title: string;
-  imageUrl: string;
-  category: string;
-  author: string;
-  publishedAt: string;
-  fullContent: string;
-}
+import { NewsArticle, ApiArticle, transformApiArticle } from "@/types";
 
 async function fetchNews(): Promise<NewsArticle[]> {
   const res = await fetch("https://trend-story-api.oopus.info/latest", { cache: "no-store" });
   if (!res.ok) throw new Error("Failed to fetch news");
   const data = await res.json();
-  return (data.records as ApiArticle[]).map((item) => ({
-    id: item.id,
-    title: item.keywords,
-    fullContent: item.news,
-    imageUrl: item.image?.url || "",
-    category: item.tag?.[0] || "",
-    author: "Trending-stories Project",
-    publishedAt: item.date || "",
-  }));
+  return (data.records as ApiArticle[]).map(transformApiArticle);
 }
 
 export default function NewsPage() {
@@ -46,7 +19,7 @@ export default function NewsPage() {
   const [error, setError] = useState<string | null>(null);
 
   // Fetch news on mount
-  React.useEffect(() => {
+  useEffect(() => {
     setLoading(true);
     fetchNews()
       .then((data) => {
@@ -58,6 +31,30 @@ export default function NewsPage() {
         setLoading(false);
       });
   }, []);
+
+  // Note: Scroll position saving is handled in NewsCard onClick
+  // We don't save on unmount because by that time the scroll position
+  // has already been reset to 0, which would overwrite the correct value
+
+  // Restore scroll position after articles are loaded
+  useEffect(() => {
+    if (!loading && articles.length > 0 && typeof window !== 'undefined') {
+      const currentPath = window.location.pathname;
+      const savedPosition = sessionStorage.getItem('scroll_position_' + currentPath);
+      
+      if (savedPosition) {
+        const scrollY = parseInt(savedPosition, 10);
+        
+        // Use requestAnimationFrame to ensure DOM is fully rendered
+        requestAnimationFrame(() => {
+          window.scrollTo(0, scrollY);
+        });
+        
+        // Clean up the saved position
+        sessionStorage.removeItem('scroll_position_' + currentPath);
+      }
+    }
+  }, [loading, articles]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -73,7 +70,7 @@ export default function NewsPage() {
         )}
       </main>
       <footer className="text-black text-center py-4 mt-8">
-        <p>Copyright (c) {new Date().getFullYear()} <a href="https://github.com/sudoghut" target="_blank">oopus</a></p>
+        <p>Copyright (c) {new Date().getFullYear()} <a href="https://github.com/sudoghut" target="_blank" rel="noopener noreferrer">oopus</a></p>
       </footer>
     </div>
   );

@@ -1,17 +1,8 @@
 import { Card, CardContent, Badge } from './ui';
-import { ImageWithFallback } from './figma/ImageWithFallback';
+import { ImageWithFallback } from './common/ImageWithFallback';
 import { User } from 'lucide-react';
 import Link from 'next/link';
-
-interface NewsArticle {
-  id: number;
-  title: string;
-  imageUrl: string;
-  category: string;
-  author: string;
-  publishedAt: string;
-  fullContent: string;
-}
+import { NewsArticle } from '@/types';
 
 interface NewsCardProps {
   article: NewsArticle;
@@ -30,8 +21,17 @@ export function NewsCard({ article, date }: NewsCardProps) {
   const href = yyyymmdd
     ? `/article/${article.id}?date=${yyyymmdd}`
     : `/article/${article.id}`;
+
+  const handleClick = () => {
+    // Save current scroll position before navigating
+    if (typeof window !== 'undefined') {
+      const currentPath = window.location.pathname;
+      sessionStorage.setItem('scroll_position_' + currentPath, window.scrollY.toString());
+    }
+  };
+
   return (
-    <Link href={href}>
+    <Link href={href} onClick={handleClick}>
       <Card
         className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer group"
       >

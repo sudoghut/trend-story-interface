@@ -1,14 +1,5 @@
 import { NewsCard } from './NewsCard';
-
-interface NewsArticle {
-  id: number;
-  title: string;
-  imageUrl: string;
-  category: string;
-  author: string;
-  publishedAt: string;
-  fullContent: string;
-}
+import { NewsArticle } from '@/types';
 
 interface NewsGridProps {
   articles: NewsArticle[];
@@ -18,10 +9,6 @@ interface NewsGridProps {
 export function NewsGrid({ articles, date }: NewsGridProps) {
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        {/* <h2 className="mb-2">Latest News</h2> */}
-        {/* <p className="text-muted-foreground">Explore the stories behind daily <a href="https://trends.google.com/trends/trendingsearches/daily">U.S. Google Trends</a></p> */}
-      </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {articles.map((article) => (
