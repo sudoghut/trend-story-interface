@@ -15,22 +15,34 @@ interface NewsArticle {
 
 interface NewsCardProps {
   article: NewsArticle;
+  date?: string;
 }
 
-export function NewsCard({ article }: NewsCardProps) {
+export function NewsCard({ article, date }: NewsCardProps) {
+  // Extract yyyymmdd from article.publishedAt (format: 'YYYY-MM-DD HH:mm:ss')
+  let yyyymmdd = '';
+  if (article.publishedAt) {
+    const match = article.publishedAt.match(/(\d{4})-(\d{2})-(\d{2})/);
+    if (match) {
+      yyyymmdd = `${match[1]}${match[2]}${match[3]}`;
+    }
+  }
+  const href = yyyymmdd
+    ? `/article/${article.id}?date=${yyyymmdd}`
+    : `/article/${article.id}`;
   return (
-    <Link href={`/article/${article.id}`}>
+    <Link href={href}>
       <Card
         className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer group"
       >
       <div className="relative aspect-video overflow-hidden">
-        <ImageWithFallback 
+        <ImageWithFallback
           src={article.imageUrl}
           alt={article.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
-        <Badge 
-          variant="secondary" 
+        <Badge
+          variant="secondary"
           className="absolute top-3 left-3 bg-background/90 text-foreground"
         >
           {article.category}

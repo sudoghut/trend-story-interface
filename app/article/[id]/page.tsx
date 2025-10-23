@@ -45,26 +45,67 @@ async function fetchAllArticles(): Promise<NewsArticle[]> {
   }));
 }
 
-async function fetchArticleById(id: string): Promise<NewsArticle | null> {
+async function fetchArticleById(id: string, date?: string): Promise<NewsArticle | null> {
   try {
     // First, try to get from session storage (client-side cache)
     if (typeof window !== 'undefined') {
-      const cached = sessionStorage.getItem(`article_${id}`);
+      const cacheKey = date ? `article_${id}_${date}` : `article_${id}`;
+      const cached = sessionStorage.getItem(cacheKey);
       if (cached) {
         return JSON.parse(cached);
       }
     }
-    
-    // Fallback: fetch all articles and find the one we need
-    const articles = await fetchAllArticles();
-    const found = articles.find((a) => a.id.toString() === id);
-    
+
+    let found: NewsArticle | null = null;
+
+    if (date) {
+      // Fetch all articles for the date and find by id
+      const res = await fetch(`/api/date/${date}`, { cache: "no-store" });
+      if (!res.ok) {
+        if (res.status === 404) return null;
+        throw new Error("Failed to fetch articles for date");
+      }
+      const data = await res.json();
+      if (Array.isArray(data.records)) {
+        const match = data.records.find((item: any) => item.id.toString() === id);
+        if (match) {
+          found = {
+            id: match.id,
+            title: match.keywords,
+            fullContent: match.news,
+            imageUrl: match.image?.url || "",
+            category: match.tag?.[0] || "",
+            author: "Trending-stories Project",
+            publishedAt: match.date || "",
+          };
+        }
+      }
+    } else {
+      // Fetch from local API route
+      const res = await fetch(`/api/article/${id}`, { cache: "no-store" });
+      if (!res.ok) {
+        if (res.status === 404) return null;
+        throw new Error("Failed to fetch article");
+      }
+      const data = await res.json();
+      found = {
+        id: data.id,
+        title: data.keywords,
+        fullContent: data.news,
+        imageUrl: data.image?.url || "",
+        category: data.tag?.[0] || "",
+        author: "Trending-stories Project",
+        publishedAt: data.date || "",
+      };
+    }
+
     // Cache for future use
     if (found && typeof window !== 'undefined') {
-      sessionStorage.setItem(`article_${id}`, JSON.stringify(found));
+      const cacheKey = date ? `article_${id}_${date}` : `article_${id}`;
+      sessionStorage.setItem(cacheKey, JSON.stringify(found));
     }
-    
-    return found || null;
+
+    return found;
   } catch (error) {
     console.error("Error fetching article:", error);
     throw error;
@@ -75,14 +116,27 @@ export default function ArticlePage() {
   const params = useParams();
   const router = useRouter();
   const articleId = params.id as string;
-  
+
+  // Get date query param from URL
+  const [dateParam, setDateParam] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const date = urlParams.get('date');
+      setDateParam(date || undefined);
+    }
+  }, []);
+
   const [article, setArticle] = useState<NewsArticle | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Wait for dateParam to be initialized before fetching
+    if (typeof window !== 'undefined' && window.location.search && dateParam === undefined) return;
     setLoading(true);
-    fetchArticleById(articleId)
+    fetchArticleById(articleId, dateParam)
       .then((foundArticle) => {
         if (foundArticle) {
           setArticle(foundArticle);
@@ -95,7 +149,7 @@ export default function ArticlePage() {
         setError(e.message || "Unknown error");
         setLoading(false);
       });
-  }, [articleId]);
+  }, [articleId, dateParam]);
 
   if (loading) {
     return (

@@ -13,7 +13,7 @@ export function Header() {
               <Menu className="h-5 w-5" />
             </Button>
             <div className="flex items-end">
-              <h1 className="text-2xl font-bold text-primary">Trending Stories</h1>
+              <h1 className="text-2xl font-bold text-primary"><a href="/">Trending Stories</a></h1>
               <span className="ml-2 text-sm text-muted-foreground">Explore the stories behind daily <a href="https://trends.google.com/trends/trendingsearches/daily" target='_blank'>U.S. Google Trends</a></span>
             </div>
           </div>

@@ -12,9 +12,10 @@ interface NewsArticle {
 
 interface NewsGridProps {
   articles: NewsArticle[];
+  date?: string;
 }
 
-export function NewsGrid({ articles }: NewsGridProps) {
+export function NewsGrid({ articles, date }: NewsGridProps) {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
@@ -27,6 +28,7 @@ export function NewsGrid({ articles }: NewsGridProps) {
           <NewsCard
             key={article.id}
             article={article}
+            date={date}
           />
         ))}
       </div>
