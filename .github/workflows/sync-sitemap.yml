@@ -1,0 +1,33 @@
+name: Sync Sitemap
+
+on:
+  repository_dispatch:
+    types: [sitemap-updated]
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout trend-story-interface
+        uses: actions/checkout@v3
+        with:
+          repository: sudoghut/trend-story-interface
+
+      - name: Download sitemap.xml
+        uses: actions/checkout@v3
+        with:
+          repository: sudoghut/trends-story
+          path: sitemap-source
+          sparse-checkout: sitemap.xml
+
+      - name: Move sitemap.xml
+        run: mv sitemap-source/sitemap.xml public/sitemap.xml
+
+      - name: Commit and push if changed
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add public/sitemap.xml
+          git commit -m "Update sitemap.xml" || exit 0
+          git push
