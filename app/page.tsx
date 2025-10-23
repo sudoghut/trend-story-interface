@@ -92,14 +92,6 @@ export default function NewsPage() {
       <Header />
       <main>
         <Analytics />
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-5ZMVBWD496"></script>
-        <script>
-          (window as any).dataLayer = window.dataLayer || [];
-          function gtag(){(window as any).dataLayer.push(arguments)}
-          gtag('js', new Date());
-
-          gtag('config', 'G-5ZMVBWD496');
-        </script>
         {error ? (
           <div className="text-red-600 text-center py-8">Error: {error}</div>
         ) : loading ? (
