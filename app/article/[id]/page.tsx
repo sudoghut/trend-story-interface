@@ -30,7 +30,7 @@ interface NewsArticle {
   fullContent: string;
 }
 
-async function fetchNews(): Promise<NewsArticle[]> {
+async function fetchAllArticles(): Promise<NewsArticle[]> {
   const res = await fetch("https://trend-story-api.oopus.info/latest", { cache: "no-store" });
   if (!res.ok) throw new Error("Failed to fetch news");
   const data = await res.json();
@@ -45,6 +45,32 @@ async function fetchNews(): Promise<NewsArticle[]> {
   }));
 }
 
+async function fetchArticleById(id: string): Promise<NewsArticle | null> {
+  try {
+    // First, try to get from session storage (client-side cache)
+    if (typeof window !== 'undefined') {
+      const cached = sessionStorage.getItem(`article_${id}`);
+      if (cached) {
+        return JSON.parse(cached);
+      }
+    }
+    
+    // Fallback: fetch all articles and find the one we need
+    const articles = await fetchAllArticles();
+    const found = articles.find((a) => a.id.toString() === id);
+    
+    // Cache for future use
+    if (found && typeof window !== 'undefined') {
+      sessionStorage.setItem(`article_${id}`, JSON.stringify(found));
+    }
+    
+    return found || null;
+  } catch (error) {
+    console.error("Error fetching article:", error);
+    throw error;
+  }
+}
+
 export default function ArticlePage() {
   const params = useParams();
   const router = useRouter();
@@ -56,11 +82,10 @@ export default function ArticlePage() {
 
   useEffect(() => {
     setLoading(true);
-    fetchNews()
-      .then((articles) => {
-        const found = articles.find((a) => a.id.toString() === articleId);
-        if (found) {
-          setArticle(found);
+    fetchArticleById(articleId)
+      .then((foundArticle) => {
+        if (foundArticle) {
+          setArticle(foundArticle);
         } else {
           setError("Article not found");
         }
