@@ -212,18 +212,45 @@ export default function ArticlePage() {
                     {...props}
                   />
                 ),
-                code: ({ node, inline, ...props }: any) =>
-                  inline ? (
-                    <code
-                      className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono text-foreground border border-border"
-                      {...props}
-                    />
-                  ) : (
-                    <code
-                      className="block bg-muted p-4 rounded-lg text-sm font-mono overflow-x-auto my-4 border border-border"
-                      {...props}
-                    />
-                  ),
+                code: ({ node, className, children, ...props }) => {
+                  // Code blocks will have a className like "language-js".
+                  // Inline code will have no className.
+                  const isBlock = className; 
+
+                  if (isBlock) {
+                    // It's a code block
+                    return (
+                      <code
+                        className={`${className} block bg-muted p-4 rounded-lg text-sm font-mono overflow-x-auto my-4 border border-border`}
+                        {...props}
+                      >
+                        {children}
+                      </code>
+                    );
+                  } else {
+                    // It's inline code
+                    return (
+                      <code
+                        className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono text-foreground border border-border"
+                        {...props}
+                      >
+                        {children}
+                      </code>
+                    );
+                  }
+                },
+                // code: ({ node, inline, ...props }: any) =>
+                //   inline ? (
+                //     <code
+                //       className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono text-foreground border border-border"
+                //       {...props}
+                //     />
+                //   ) : (
+                //     <code
+                //       className="block bg-muted p-4 rounded-lg text-sm font-mono overflow-x-auto my-4 border border-border"
+                //       {...props}
+                //     />
+                //   ),
                 pre: ({ node, ...props }) => (
                   <pre className="overflow-x-auto" {...props} />
                 ),
