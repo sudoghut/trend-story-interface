@@ -6,6 +6,7 @@ export interface ApiArticle {
   keywords: string;
   image: { file_name: string; url: string };
   tag: string[];
+  serpapi_data_date: string;
 }
 
 // Transformed article type for UI

@@ -10,7 +10,29 @@ async function fetchNews(): Promise<NewsArticle[]> {
   const res = await fetch("https://trend-story-api.oopus.info/latest", { cache: "no-store" });
   if (!res.ok) throw new Error("Failed to fetch news");
   const data = await res.json();
-  return (data.records as ApiArticle[]).map(transformApiArticle);
+  
+  // Filter records by latest serpapi_data_date
+  const records = data.records as ApiArticle[];
+  
+  // Handle edge cases: empty array or no records
+  if (!records || records.length === 0) {
+    return [];
+  }
+  
+  // Find the maximum (latest) serpapi_data_date
+  const maxDate = records.reduce((max, record) => {
+    // Handle missing dates by treating them as earliest possible date
+    if (!record.serpapi_data_date) return max;
+    if (!max) return record.serpapi_data_date;
+    return record.serpapi_data_date > max ? record.serpapi_data_date : max;
+  }, records[0]?.serpapi_data_date || "");
+  
+  // Filter to only include records with the latest date
+  const filteredRecords = records.filter(record =>
+    record.serpapi_data_date === maxDate
+  );
+  
+  return filteredRecords.map(transformApiArticle);
 }
 
 export default function NewsPage() {
