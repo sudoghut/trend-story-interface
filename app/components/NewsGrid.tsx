@@ -1,3 +1,6 @@
+'use client';
+
+import { useMemo } from 'react';
 import { NewsCard } from './NewsCard';
 import { NewsArticle } from '@/types';
 
@@ -7,6 +10,11 @@ interface NewsGridProps {
 }
 
 export function NewsGrid({ articles, date }: NewsGridProps) {
+  const hasAnyImage = useMemo(
+    () => articles.some((article) => Boolean(article.imageUrl)),
+    [articles]
+  );
+
   return (
     <div className="container mx-auto px-4 py-8">
       
@@ -16,6 +24,7 @@ export function NewsGrid({ articles, date }: NewsGridProps) {
             key={article.id}
             article={article}
             date={date}
+            showMissingImagePlaceholder={hasAnyImage}
           />
         ))}
       </div>

@@ -135,19 +135,27 @@ export default function ArticlePage() {
           </Button>
 
           {/* Article Image */}
-          <div className="relative aspect-video overflow-hidden rounded-lg mb-6">
-            <ImageWithFallback 
-              src={article.imageUrl}
-              alt={article.title}
-              className="w-full h-full object-cover"
-            />
-            <Badge 
-              variant="secondary" 
-              className="absolute top-4 left-4 bg-background/90 text-foreground"
-            >
-              {article.category}
-            </Badge>
-          </div>
+          {article.imageUrl ? (
+            <div className="relative aspect-video overflow-hidden rounded-lg mb-6">
+              <ImageWithFallback 
+                src={article.imageUrl}
+                alt={article.title}
+                className="w-full h-full object-cover"
+              />
+              <Badge 
+                variant="secondary" 
+                className="absolute top-4 left-4 bg-background/90 text-foreground"
+              >
+                {article.category}
+              </Badge>
+            </div>
+          ) : (
+            <div className="mb-4">
+              <Badge variant="secondary" className="bg-background/90 text-foreground">
+                {article.category}
+              </Badge>
+            </div>
+          )}
           
           {/* Article Title */}
           <h1 className="text-3xl font-bold mb-4 leading-tight">

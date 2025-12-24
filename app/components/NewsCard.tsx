@@ -1,15 +1,26 @@
-import { Card, CardContent, Badge } from './ui';
+'use client';
+
 import { ImageWithFallback } from './common/ImageWithFallback';
+import { Card, CardContent, Badge } from './ui';
 import { User } from 'lucide-react';
 import Link from 'next/link';
 import { NewsArticle } from '@/types';
+import { ERROR_IMG_SRC } from './common/imagePlaceholders';
 
 interface NewsCardProps {
   article: NewsArticle;
   date?: string;
+  showMissingImagePlaceholder?: boolean;
 }
 
-export function NewsCard({ article, date }: NewsCardProps) {
+export function NewsCard({
+  article,
+  date,
+  showMissingImagePlaceholder,
+}: NewsCardProps) {
+  const imageSrc = article.imageUrl || ERROR_IMG_SRC;
+  const imageAlt = article.imageUrl ? article.title : '';
+
   // Extract yyyymmdd from article.publishedAt (format: 'YYYY-MM-DD HH:mm:ss')
   let yyyymmdd = '';
   if (article.publishedAt) {
@@ -35,19 +46,28 @@ export function NewsCard({ article, date }: NewsCardProps) {
       <Card
         className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer group"
       >
-      <div className="relative aspect-video overflow-hidden">
-        <ImageWithFallback
-          src={article.imageUrl}
-          alt={article.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-        />
-        <Badge
-          variant="secondary"
-          className="absolute top-3 left-3 bg-background/90 text-foreground"
-        >
-          {article.category}
-        </Badge>
-      </div>
+      {showMissingImagePlaceholder ? (
+        <div className="relative aspect-video overflow-hidden">
+          <ImageWithFallback
+            src={imageSrc}
+            alt={imageAlt}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            loading="lazy"
+          />
+          <Badge
+            variant="secondary"
+            className="absolute top-3 left-3 bg-background/90 text-foreground"
+          >
+            {article.category}
+          </Badge>
+        </div>
+      ) : (
+        <div className="px-4 pt-4">
+          <Badge variant="secondary" className="bg-background/90 text-foreground">
+            {article.category}
+          </Badge>
+        </div>
+      )}
       
       <CardContent className="p-4">
         <div className="space-y-3">
