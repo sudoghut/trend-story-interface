@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Header } from "../../components/Header";
 import { Badge } from "../../components/ui/badge";
 import { Button } from "../../components/ui/button";
@@ -69,18 +69,28 @@ export default function ArticlePage() {
 
   // Get date query param from URL
   const [dateParam, setDateParam] = useState<string | undefined>(undefined);
+  const hasCheckedHistory = useRef(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search);
       const date = urlParams.get('date');
       setDateParam(date || undefined);
+      // Check if user navigated from within the site (only once)
+      if (!hasCheckedHistory.current) {
+        hasCheckedHistory.current = true;
+        const navigatedFromSite = sessionStorage.getItem('navigated_from_site');
+        setHasHistory(navigatedFromSite === 'true');
+        // Clear the flag after reading
+        sessionStorage.removeItem('navigated_from_site');
+      }
     }
   }, []);
 
   const [article, setArticle] = useState<NewsArticle | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [hasHistory, setHasHistory] = useState(false);
 
   useEffect(() => {
     // Wait for dateParam to be initialized before fetching
@@ -125,14 +135,16 @@ export default function ArticlePage() {
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Back Button */}
-          <Button
-            variant="ghost"
-            className="mb-6"
-            onClick={() => router.back()}
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back
-          </Button>
+          {hasHistory && (
+            <Button
+              variant="ghost"
+              className="mb-6 cursor-pointer"
+              onClick={() => router.back()}
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back
+            </Button>
+          )}
 
           {/* Article Image */}
           {article.imageUrl ? (

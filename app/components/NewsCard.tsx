@@ -38,6 +38,8 @@ export function NewsCard({
     if (typeof window !== 'undefined') {
       const currentPath = window.location.pathname;
       sessionStorage.setItem('scroll_position_' + currentPath, window.scrollY.toString());
+      // Mark that we're navigating from within the site
+      sessionStorage.setItem('navigated_from_site', 'true');
     }
   };
 
