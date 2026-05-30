@@ -10,7 +10,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const res = await fetch("https://trend-story-api.oopus.info/sitemap.xml", {
       next: { revalidate: 86400 },
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(15000),
     });
     if (!res.ok) return FALLBACK;
 
