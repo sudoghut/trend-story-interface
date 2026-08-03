@@ -14,7 +14,7 @@
     "@vercel/analytics": "^1.5.0",
     "class-variance-authority": "^0.7.1",
     "lucide-react": "^0.544.0",
-    "next": "15.5.9",
+    "next": "15.5.21",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
     "react-markdown": "^10.1.0",
@@ -28,5 +28,11 @@
     "@types/react-dom": "^19",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "overrides": {
+    "postcss": "^8.5.18",
+    "sharp": "^0.35.0",
+    "tar": "^7.5.18",
+    "mdast-util-to-hast": "^13.2.1"
   }
 }
